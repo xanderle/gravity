@@ -55,7 +55,7 @@ class Disease(Model):
                 self.noAlive+=1
             self.grid.place_agent(cell, (x, y))
             self.schedule.add(cell)
-
+        self.datacollector.collect(self)
         self.running = True
 
     def step(self):
