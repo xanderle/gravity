@@ -1,4 +1,4 @@
-from random import random
+from random import random, randint
 
 from mesa import Model
 from mesa.time import SimultaneousActivation
@@ -23,9 +23,6 @@ class Disease(Model):
         '''
         Create a new playing area of (height, width) cells.
         '''
-        self.noInfected = 0
-        self.noVaccinated = 0
-        self.noAlive = 0
         # Set up the grid and schedule.
 
         # Use SimultaneousActivation which simulates all the cells
@@ -44,17 +41,44 @@ class Disease(Model):
         # ALIVE and some to DEAD.
         for (contents, x, y) in self.grid.coord_iter():
             cell = Cell((x, y), self)
-            if random() < .1:
-                cell.state = cell.INFECTED
-                self.noInfected+=1
-            elif random() < .5:
-                cell.state = cell.VACCINATED
-                self.noVaccinated +=1
-            else:
-                cell.state = cell.ALIVE
-                self.noAlive+=1
+            # if random() < .1:
+            #     cell.state = cell.INFECTED
+            #     self.noInfected+=1
+            # elif random() < .5:
+            #     cell.state = cell.VACCINATED
+            #     self.noVaccinated +=1
+            # else:
+                # cell.state = cell.ALIVE
+                # self.noAlive+=1
+            cell.state = cell.ALIVE
+
             self.grid.place_agent(cell, (x, y))
             self.schedule.add(cell)
+        # Infect map
+        j = 0
+        while j <= 10:
+            x = randint(0,width-1)
+            y = randint(0,height-1)
+            if self.grid[x][y].state == 0:
+                continue
+            elif self.grid[x][y].state == 3:
+                continue
+            else:
+                self.grid[x][y].state = 0
+                j+=1
+
+        # Input vaccinated
+        j = 0
+        while j <= 8000:
+            x = randint(0,width-1)
+            y = randint(0,height-1)
+            if self.grid[x][y].state == 0:
+                continue
+            elif self.grid[x][y].state == 3:
+                continue
+            else:
+                self.grid[x][y].state = 3
+                j+=1
         self.datacollector.collect(self)
         self.running = True
 
