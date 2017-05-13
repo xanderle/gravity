@@ -26,17 +26,28 @@ class Disease(Model):
 
         self.schedule = SimultaneousActivation(self)
         self.noInfected = 5
-        self.noVaccinated = 9000
-        x = input("Number of infected: ")
-        y = input("Number of vaccinated: ")
-        try:
-            self.noInfected = int(x)
-        except ValueError as e:
-            print("Using default values")
-        try:
-            self.noVaccinated = int(y)
-        except ValueError as e:
-            print("Using default values")
+
+        size = height*width
+        x = size+1
+
+        while x > size:
+            try:
+                x = int(input("Number of infected (Must be smaller than " + str(size)+"): "))
+                self.noInfected = x
+            except ValueError as e:
+                print("Using default values")
+                self.noInfected = 5
+
+        y = size-x+1
+        while(y >size-x):
+
+            try:
+                y = int(input("Number of vaccinated (Must be smaller than " + str(size-x)+"): "))
+                self.noVaccinated = y
+            except ValueError as e:
+                print("Using default values")
+                self.noVaccinated = 9000
+        
         # Use a simple grid, where edges wrap around.
         self.grid = Grid(height, width, torus=True)
         self.datacollector = DataCollector(
@@ -92,8 +103,13 @@ class Disease(Model):
         '''
         Have the scheduler advance each cell by one step
         '''
+        prev = self.count_type(self,0)
+
         self.schedule.step()
         self.datacollector.collect(self)
+        nxt = self.count_type(self,0)
+        if prev == nxt:
+            self.running = False
 
     @property
     def Infected(self):
