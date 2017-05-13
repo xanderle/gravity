@@ -6,14 +6,6 @@ from mesa.space import Grid
 from mesa.datacollection import DataCollector
 from disease.cell import Cell
 
-def calcNoInfected(model):
-    count = 0
-    for infected in model.schedule.cell:
-        if infected.status == 0:
-            count+=1
-    return count
-
-
 class Disease(Model):
     '''
     A 2-Dimensional representation of herd immunity
@@ -24,13 +16,15 @@ class Disease(Model):
         Create a new playing area of (height, width) cells.
         '''
         # Set up the grid and schedule.
-
+        
         # Use SimultaneousActivation which simulates all the cells
         # computing their next state simultaneously.  This needs to
         # be done because each cell's next state depends on the current
         # state of all its neighbors -- before they've changed.
         self.schedule = SimultaneousActivation(self)
-
+        self.noInfected = 0
+        self.noVaccinated = 0
+        self.noAlive = 2
         # Use a simple grid, where edges wrap around.
         self.grid = Grid(height, width, torus=True)
         self.datacollector = DataCollector(
@@ -56,7 +50,7 @@ class Disease(Model):
             self.schedule.add(cell)
         # Infect map
         j = 0
-        while j <= 10:
+        while j <= 20:
             x = randint(0,width-1)
             y = randint(0,height-1)
             if self.grid[x][y].state == 0:
@@ -79,9 +73,8 @@ class Disease(Model):
             else:
                 self.grid[x][y].state = 3
                 j+=1
-        self.datacollector.collect(self)
         self.running = True
-
+        self.datacollector.collect(self)
     def step(self):
         '''
         Have the scheduler advance each cell by one step
@@ -89,6 +82,9 @@ class Disease(Model):
         self.schedule.step()
         self.datacollector.collect(self)
 
+    @property
+    def Infected(self):
+        return self.noInfected
     @staticmethod
     def count_type(model,condition):
         """
