@@ -25,9 +25,18 @@ class Disease(Model):
         # state of all its neighbors -- before they've changed.
 
         self.schedule = SimultaneousActivation(self)
-        self.noInfected = 0
-        self.noVaccinated = 0
-        
+        self.noInfected = 5
+        self.noVaccinated = 9000
+        x = input("Number of infected: ")
+        y = input("Number of vaccinated: ")
+        try:
+            self.noInfected = int(x)
+        except ValueError as e:
+            print("Using default values")
+        try:
+            self.noVaccinated = int(y)
+        except ValueError as e:
+            print("Using default values")
         # Use a simple grid, where edges wrap around.
         self.grid = Grid(height, width, torus=True)
         self.datacollector = DataCollector(
