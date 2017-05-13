@@ -6,7 +6,7 @@ from disease.model import Disease
 
 from mesa.visualization.modules.TextVisualization import TextElement
 
-# Make a world that is 50x50, on a 250x250 display.
+# Make a world that is 100x100, on a 600x600 display.
 canvas_element = CanvasGrid(portrayCell, 100, 100, 600, 600)
 
 chart = ChartModule([{"Label": "Alive", "Color": "green"},
@@ -15,3 +15,4 @@ chart = ChartModule([{"Label": "Alive", "Color": "green"},
 
 server = ModularServer(Disease, [canvas_element,chart], "Herd Immunity",
                        100, 100)
+server.port=1234

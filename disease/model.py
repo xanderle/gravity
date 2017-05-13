@@ -6,6 +6,8 @@ from mesa.space import Grid
 from mesa.datacollection import DataCollector
 from disease.cell import Cell
 
+import sys
+
 class Disease(Model):
     '''
     A 2-Dimensional representation of herd immunity
@@ -16,15 +18,19 @@ class Disease(Model):
         Create a new playing area of (height, width) cells.
         '''
         # Set up the grid and schedule.
-        
+
         # Use SimultaneousActivation which simulates all the cells
         # computing their next state simultaneously.  This needs to
         # be done because each cell's next state depends on the current
         # state of all its neighbors -- before they've changed.
+
         self.schedule = SimultaneousActivation(self)
-        self.noInfected = 0
-        self.noVaccinated = 0
-        self.noAlive = 2
+        self.noInfected = 100
+        self.noVaccinated = 6000
+        print("Input Number of Infected (World of 10,000 cells)")
+        self.noInfected = int(input())
+        print("Input Number of Vaccinated (World of 10,000 cells)")
+        self.noVaccinated = int(input())
         # Use a simple grid, where edges wrap around.
         self.grid = Grid(height, width, torus=True)
         self.datacollector = DataCollector(
@@ -33,6 +39,7 @@ class Disease(Model):
              "Alive": lambda m: self.count_type(m, 1)})
         # Place a cell at each location, with some initialized to
         # ALIVE and some to DEAD.
+
         for (contents, x, y) in self.grid.coord_iter():
             cell = Cell((x, y), self)
             # if random() < .1:
@@ -50,7 +57,7 @@ class Disease(Model):
             self.schedule.add(cell)
         # Infect map
         j = 0
-        while j <= 20:
+        while j <= self.noInfected:
             x = randint(0,width-1)
             y = randint(0,height-1)
             if self.grid[x][y].state == 0:
@@ -63,7 +70,7 @@ class Disease(Model):
 
         # Input vaccinated
         j = 0
-        while j <= 8000:
+        while j <= self.noVaccinated:
             x = randint(0,width-1)
             y = randint(0,height-1)
             if self.grid[x][y].state == 0:
