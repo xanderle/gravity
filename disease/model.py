@@ -1,12 +1,12 @@
 from random import random, randint
-
+import tkinter
 from mesa import Model
 from mesa.time import SimultaneousActivation
 from mesa.space import Grid
 from mesa.datacollection import DataCollector
 from disease.cell import Cell
+from disease.form import form
 
-import sys
 
 class Disease(Model):
     '''
@@ -25,12 +25,9 @@ class Disease(Model):
         # state of all its neighbors -- before they've changed.
 
         self.schedule = SimultaneousActivation(self)
-        self.noInfected = 100
-        self.noVaccinated = 6000
-        print("Input Number of Infected (World of 10,000 cells)")
-        self.noInfected = int(input())
-        print("Input Number of Vaccinated (World of 10,000 cells)")
-        self.noVaccinated = int(input())
+        self.noInfected = 0
+        self.noVaccinated = 0
+        
         # Use a simple grid, where edges wrap around.
         self.grid = Grid(height, width, torus=True)
         self.datacollector = DataCollector(
