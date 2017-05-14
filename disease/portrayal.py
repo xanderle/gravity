@@ -12,6 +12,8 @@ def portrayCell(cell):
         color = "blue"
     elif cell.isInfected:
         color = "red"
+    elif cell.isImmune:
+        color = 'yellow'
     return {
         "Shape": "rect",
         "w": 1,

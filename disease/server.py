@@ -11,7 +11,8 @@ canvas_element = CanvasGrid(portrayCell, 100, 100, 600, 600)
 
 chart = ChartModule([{"Label": "Alive", "Color": "green"},
                           {"Label": "Infected", "Color": "red"},
-                          {"Label": "Vaccinated", "Color": "blue"}])
+                          {"Label": "Vaccinated", "Color": "blue"},
+                          {"Label": "Immune", "Color":"yellow"}])
 
 server = ModularServer(Disease, [canvas_element,chart], "Herd Immunity",
                        100, 100)

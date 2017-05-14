@@ -1,5 +1,5 @@
 from mesa import Agent
-
+import random
 
 class Cell(Agent):
     '''Represents a single ALIVE or DEAD cell in the simulation.'''
@@ -7,7 +7,7 @@ class Cell(Agent):
     INFECTED = 0
     ALIVE = 1
     VACCINATED = 3
-
+    IMMUNE = 2
 
     def __init__(self, pos, model, init_state=ALIVE):
         '''
@@ -17,6 +17,7 @@ class Cell(Agent):
         self.x, self.y = pos
         self.state = init_state
         self._nextState = None
+        self.immunityChance = 0.9
 
     @property
     def isAlive(self):
@@ -27,6 +28,9 @@ class Cell(Agent):
     @property
     def isVaccinated(self):
         return self.state == self.VACCINATED
+    @property
+    def isImmune(self):
+        return self.state == self.IMMUNE
     @property
     def neighbors(self):
         return self.model.grid.neighbor_iter((self.x, self.y), True)
@@ -48,12 +52,17 @@ class Cell(Agent):
         self._nextState = self.state
         if self.isAlive:
             if infected_neighbors > 0:
-                self._nextState = self.INFECTED
+                chance = random.random()
+                if(chance > self.immunityChance):
+                    self._nextState = self.IMMUNE
+                else:
+                    self._nextState = self.INFECTED
         elif self.isVaccinated:
             self._nextState = self.VACCINATED
         elif self.isInfected:
             self._nextState = self.INFECTED
-
+        elif self.isImmune:
+            self._nextState = self.IMMUNE
     def advance(self):
         '''
         Set the state to the new computed state -- computed in step().

@@ -5,7 +5,7 @@ from mesa.time import SimultaneousActivation
 from mesa.space import Grid
 from mesa.datacollection import DataCollector
 from disease.cell import Cell
-from disease.form import form
+
 
 
 class Disease(Model):
@@ -25,7 +25,6 @@ class Disease(Model):
         # state of all its neighbors -- before they've changed.
 
         self.schedule = SimultaneousActivation(self)
-        self.noInfected = 5
 
         size = height*width
         x = size+1
@@ -35,8 +34,8 @@ class Disease(Model):
                 x = int(input("Number of infected (Must be smaller than " + str(size)+"): "))
                 self.noInfected = x
             except ValueError as e:
-                print("Using default values")
-                self.noInfected = 5
+                print("Please enter a value")
+
 
         y = size-x+1
         while(y >size-x):
@@ -45,15 +44,22 @@ class Disease(Model):
                 y = int(input("Number of vaccinated (Must be smaller than " + str(size-x)+"): "))
                 self.noVaccinated = y
             except ValueError as e:
-                print("Using default values")
-                self.noVaccinated = 9000
-        
+                print("Please enter a value")
+        z = 2.0
+        while(z > 1):
+            try:
+                z = float(input("Chance of being Immune 0 <= x <= 1: "))
+                self.immunityChance = z
+            except ValueError as e:
+                print("Please enter a value")
+
         # Use a simple grid, where edges wrap around.
         self.grid = Grid(height, width, torus=True)
         self.datacollector = DataCollector(
             {"Infected": lambda m: self.count_type(m, 0),
              "Vaccinated": lambda m: self.count_type(m, 3),
-             "Alive": lambda m: self.count_type(m, 1)})
+             "Alive": lambda m: self.count_type(m, 1),
+             "Immune": lambda m :self.count_type(m,2)})
         # Place a cell at each location, with some initialized to
         # ALIVE and some to DEAD.
 
@@ -69,7 +75,7 @@ class Disease(Model):
                 # cell.state = cell.ALIVE
                 # self.noAlive+=1
             cell.state = cell.ALIVE
-
+            cell.immunityChance = self.immunityChance
             self.grid.place_agent(cell, (x, y))
             self.schedule.add(cell)
         # Infect map
@@ -111,9 +117,9 @@ class Disease(Model):
         if prev == nxt:
             self.running = False
 
-    @property
-    def Infected(self):
-        return self.noInfected
+    # @property
+    # def Infected(self):
+    #     return self.noInfected
     @staticmethod
     def count_type(model,condition):
         """
