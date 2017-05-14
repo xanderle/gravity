@@ -18,7 +18,8 @@ class Cell(Agent):
         self.state = init_state
         self._nextState = None
         self.immunityChance = 0.9
-
+        self.failureChance = 0.1
+        self.tested = False
     @property
     def isAlive(self):
         return self.state == self.ALIVE
@@ -50,19 +51,24 @@ class Cell(Agent):
 
         # Assume nextState is unchanged, unless changed below.
         self._nextState = self.state
-        if self.isAlive:
-            if infected_neighbors > 0:
+        if infected_neighbors > 0:
+            if self.isAlive:
+                    chance = random.random()
+                    if(chance < self.immunityChance):
+                        self._nextState = self.IMMUNE
+                    else:
+                        self._nextState = self.INFECTED
+            elif self.isVaccinated:
                 chance = random.random()
-                if(chance > self.immunityChance):
-                    self._nextState = self.IMMUNE
-                else:
+                if(chance < self.failureChance and not self.tested):
                     self._nextState = self.INFECTED
-        elif self.isVaccinated:
-            self._nextState = self.VACCINATED
-        elif self.isInfected:
-            self._nextState = self.INFECTED
-        elif self.isImmune:
-            self._nextState = self.IMMUNE
+                else:
+                    self._nextState = self.VACCINATED
+                self.tested = True
+            elif self.isInfected:
+                self._nextState = self.INFECTED
+            elif self.isImmune:
+                self._nextState = self.IMMUNE
     def advance(self):
         '''
         Set the state to the new computed state -- computed in step().

@@ -48,10 +48,19 @@ class Disease(Model):
         z = 2.0
         while(z > 1):
             try:
-                z = float(input("Chance of being Immune 0 <= x <= 1: "))
+                z = float(input("Chance of being Immune 0.0 <= x <= 1.0: "))
                 self.immunityChance = z
             except ValueError as e:
                 print("Please enter a value")
+
+        z = 2.0
+        while(z > 1):
+            try:
+                z = float(input("Chance of vaccine failing 0.0 <= x <= 1.0: "))
+                self.failureChance = z
+            except ValueError as e:
+                print("Please enter a value")
+
 
         # Use a simple grid, where edges wrap around.
         self.grid = Grid(height, width, torus=True)
@@ -76,11 +85,12 @@ class Disease(Model):
                 # self.noAlive+=1
             cell.state = cell.ALIVE
             cell.immunityChance = self.immunityChance
+            cell.failureChance = self.failureChance
             self.grid.place_agent(cell, (x, y))
             self.schedule.add(cell)
         # Infect map
         j = 0
-        while j <= self.noInfected:
+        while j < self.noInfected:
             x = randint(0,width-1)
             y = randint(0,height-1)
             if self.grid[x][y].state == 0:
@@ -93,7 +103,7 @@ class Disease(Model):
 
         # Input vaccinated
         j = 0
-        while j <= self.noVaccinated:
+        while j < self.noVaccinated:
             x = randint(0,width-1)
             y = randint(0,height-1)
             if self.grid[x][y].state == 0:
