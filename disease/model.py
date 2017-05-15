@@ -4,7 +4,7 @@ from mesa import Model
 from mesa.time import SimultaneousActivation
 from mesa.space import Grid
 from mesa.datacollection import DataCollector
-from disease.cell import Cell
+from cell import Cell
 
 
 
@@ -25,7 +25,7 @@ class Disease(Model):
         # state of all its neighbors -- before they've changed.
 
         self.schedule = SimultaneousActivation(self)
-
+        self.noAlive = height*width
         size = height*width
         x = size+1
 
