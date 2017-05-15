@@ -1,8 +1,8 @@
 from mesa.visualization.modules import CanvasGrid, ChartModule
 from mesa.visualization.ModularVisualization import ModularServer
 
-from portrayal import portrayCell
-from model import Disease
+from disease.portrayal import portrayCell
+from disease.model import Disease
 
 from mesa.visualization.modules.TextVisualization import TextElement
 
@@ -78,4 +78,3 @@ chart = ChartModule([{"Label": "Alive", "Color": "green"},
 server = ModularServer(Disease, [canvas_element,chart,initialText,initialCond,currentText,percentPop], "Herd Immunity",
                        100, 100)
 server.port=1234
-server.launch()

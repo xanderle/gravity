@@ -4,7 +4,7 @@ from mesa import Model
 from mesa.time import SimultaneousActivation
 from mesa.space import Grid
 from mesa.datacollection import DataCollector
-from cell import Cell
+from disease.cell import Cell
 
 
 

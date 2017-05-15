@@ -71,12 +71,11 @@ class ChartModule(VisualizationElement):
         new_element = new_element.format(series_json, canvas_width,
                                          canvas_height)
         self.js_code = "elements.push(" + new_element + ");"
-        
+
 
     def render(self, model):
         current_values = []
         data_collector = getattr(model, self.data_collector_name)
-
         for s in self.series:
             name = s["Label"]
             try:
